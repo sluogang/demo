@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html>    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <title>
+        冰川无线充值
+        </title>    
+        <link rel="stylesheet" href="../jquery-mobile/jquery.mobile-1.1.1.min.css"/>
+        <link rel="stylesheet" href="js/my.css" />
+        <script src="../jquery-mobile/jquery-1.7.1.min.js"></script>
+        <script src="../jquery-mobile/jquery.mobile-1.1.1.min.js"></script>
+	<script src="js/local.js"></script>  
+        <script src="js/my.js"></script> 
+        <script type="text/javascript">
+		<!--		
+		if (!jQuery) { 		
+		//jQuery 未加载 
+			if(window.confirm("您的浏览器不支持JQuery或网络太慢，请刷新重试")){
+				window.location.reload();
+			}else{
+				//alert("jquery is ready!")
+			}
+		} 
+		$(document).ready(function(e) {
+			//$("#pages").css("display","");			
+            var _username=read("username");			
+			if(_username!=null && _username!="") $("#username").val(_username);
+			var _paynum=read("paynum");
+			if(_paynum!=null && _paynum!="") {
+				$("#paynum").val(_paynum).selectmenu('refresh', true);		
+						
+			}
+			var _gameid=read("gameid");
+			if(_gameid!=null && _gameid!="")  {
+				$(":radio[name='gameid'][value=" + _gameid + "]").attr("checked", true).checkboxradio("refresh"); 	
+				$("#h_gameid").val(_gameid);
+			}
+        });	
+		 -->
+		</script>
+    </head>
+    
+    <body>
+    	 <form name="form1" id="form1" >
+        <!-- Home --> 
+       <noscript>
+        <div data-role="page" id="page0">  
+            <div data-theme="b" data-role="header">
+                <h3>
+                            冰川无线充值中心
+                </h3>   
+		        
+            </div> 
+            <div data-role="content">  
+            <p>  
+				欢迎来到冰川无线充值中心，冰川无线充值中心可以让您在手机上为冰川游戏账号（远征OL、龙武等）充值了，手机用户访问m.pay.q1.com进入。
+            </p>  
+            <p>您当前使用的手机浏览器不支持或禁用了Javascript，将无法在本浏览器上使用充值。请更换浏览器或修改设置然后重试。<br/></p>
+            <p align="center"><img src="http://api.m.q1.com/qr.aspx?data=http://m.pay.q1.com&size=2"  /><br/><a href="http://m.pay.q1.com" target="_blank">http://m.pay.q1.com</a></p>             
+            </div>  
+            <div data-theme="c" data-role="footer">
+               <p align="center" style="font-size:12px">
+                    深圳冰川网络股份有限公司 版权所有<br/>Copyright © 2009 - 2013. All Rights Reserved.  <br/>   
+                    <a href="http://www.q1.com" target="_blank">www.q1.com</a>
+               </p>
+            </div>
+        </div>
+        </noscript>
+        
+        
+        <!-- page1 -->
+        <div data-role="page" id="page1" >
+            <div data-theme="b" data-role="header">
+                <h3>
+                            冰川无线充值中心
+                </h3>     
+                 <a onclick="javascript:window.location.href='../index.html#page6'" data-icon="back" class="ui-btn-left" data-iconpos="notext"></a>    
+            </div>           
+            <div data-role="content" style="padding: 15px">                
+               
+                <input type="hidden" name="h_gameid" id="h_gameid" />
+                    <fieldset data-role="controlgroup" data-type="vertical" >
+                        <legend>
+                            选择充值的游戏平台:
+                        </legend>
+                        <input name="gameid" id="radio1" value="1" type="radio" title="远征Online" >
+                        <label for="radio1">
+                             远征Online
+                        </label>
+                        <input name="gameid" id="radio2" value="3" type="radio" title="龙武">
+                        <label for="radio2">
+                            龙武
+                        </label>			
+                        <!--<input name="gameid" id="radio3" value="1000" type="radio" title="网页游戏">
+                        <label for="radio3">
+                            网页游戏
+                        </label>-->
+                    </fieldset>
+                			
+                        <fieldset data-role="controlgroup">
+                            <label for="username">
+                                充值账号：
+                            </label>
+                            <input name="username" id="username" placeholder="" value="" type="text" >
+                       
+                            <label for="paynum">
+                                充值金额
+                            </label>
+                            <select name="paynum" id="paynum" placeholder="" >
+                            <option value="1">充值1元</option>
+                            <option value="10">充值10元</option>
+                            <option value="20">充值20元</option>
+                            <option value="30">充值30元</option>
+                            <option value="50">充值50元</option>
+                            <option value="100">充值100元</option>
+                            <option value="300">充值300元</option>
+                            <option value="500">充值500元</option>
+                            <option value="1000">充值1000元</option>
+                            <option value="5000">充值5000元</option>
+                            <option value="10000">充值10000元</option>
+                           
+                            </select>                            
+                        </fieldset>
+                   
+                   <div align="center">
+                    <a id="nextlink" data-role="button" data-inline="true" data-transition="fade" href="#page2"  data-icon="arrow-r" data-iconpos="right" data-theme="b" >
+                    下一步
+                </a> </div>
+                   
+                    <div id="debugdiv"></div>
+           <script>
+								 
+			//alert(navigator.userAgent);
+			 
+			function getBrowser()
+			{
+				$.each(
+				$.browser, function(i, val) {
+					$("<div>" + i + " : <span>" + val + "</span>").appendTo($('#debugdiv') );
+				});
+			}
+			//getBrowser();
+        </script>
+             
+            </div>
+           <div data-theme="c" data-role="footer">
+               <p align="center" style="font-size:12px">
+                   深圳冰川网络股份有限公司 版权所有<br/>Copyright © 2009 - 2013. 粤ICP备09111525号.   
+               </p>
+            </div>
+        </div>
+        <div data-role="page" id="page2">
+            <div data-theme="b" data-role="header">            
+                <h3>
+                            确认订单内容
+                </h3>
+                
+            </div>
+             <div data-role="content" style="padding: 15px"> <p>请确认充值的游戏、账号和金额是否正确</p>
+              <fieldset data-role="controlgroup">
+                            <label >
+                                游戏：
+                            </label>
+                            <label id="lab_gameid" class="ui-body-e" ></label>
+                        </fieldset>                        
+            		 <fieldset data-role="controlgroup">
+                            <label >
+                                账号：
+                            </label>
+                            <label id="lab_username" class="ui-body-e" ></label>
+                        </fieldset>                        
+                         <fieldset data-role="controlgroup">
+                            <label >
+                                金额：
+                            </label>
+                             <label id="lab_paynum" class="ui-body-e"></label>
+                        </fieldset>
+             <p class="ui-body-e" align="center" >使用支付宝无线充值多送5%的金币</p>
+             <div align="center">
+                   <a data-role="button" data-inline="true" data-transition="fade" href="#page1"  data-icon="arrow-l" data-iconpos="left" data-theme="c">
+                    上一步
+                </a>  <a data-role="button" data-inline="true" data-transition="fade" href="#page2"  data-icon="check" data-iconpos="right" data-theme="b" onclick="submitForm(form1)">
+                    确认没错
+                </a>  </div>  
+              </div>
+             <div data-theme="c" data-role="footer">
+               <p align="center" style="font-size:12px">
+                    深圳冰川网络股份有限公司 版权所有<br/>Copyright © 2009 - 2013. All Rights Reserved. 
+               </p>
+            </div>
+        </div>
+        <div data-role="page" id="page3">
+            <div data-theme="b" data-role="header">
+            <a data-role="button" data-inline="true" data-transition="fade" href="#page1"
+                data-icon="back" data-iconpos="notext">返回</a> 
+                <h3>
+                            准备付款
+                </h3>
+                
+            </div>
+             <div data-role="content" style="padding: 15px">            
+                 <div id="orderMsg"></div>
+                 <div align="center">
+                        <a id="paylink" data-role="button" data-inline="true" data-transition="fade" href="" data-icon="check" data-iconpos="right" data-theme="b" data-rel="dialog" >
+                        立即使用手机支付宝付款
+                    </a> <!-- <a data-role="button" data-inline="true" data-transition="fade" href="#page1"  data-icon="back" data-iconpos="left" data-theme="c">
+                已完成付款        
+                    </a>  -->
+                 </div>  
+                 
+                  <div data-role="collapsible-set" data-theme="c" data-content-theme="" data-inline="true" >
+                    <div data-role="collapsible" data-collapsed="true">
+                        <h3>
+                            二维码支付
+                        </h3>
+                        <div class="ui-grid-b">
+                          您可以用另一个手机扫描以下二维码，推荐使用支付宝客户端“扫码”快速完成付款，也可以用UC浏览器、快拍二维码、微信等其它二维码扫描工具。
+                        </div>
+                        <div id="qrimg" class="ui-grid-a" align="center" style=" margin:10px;">正在生成二维码...<a href="#page1" data-role="button" >点击重新下单</a></div>
+                    </div>
+                </div>
+             </div>
+            <div data-theme="c" data-role="footer">
+               <p align="center" style="font-size:12px">
+                    深圳冰川网络股份有限公司 版权所有<br/>Copyright © 2009 - 2013. 粤ICP备09111525号. 
+               </p>
+            </div>
+        </div>
+        <div data-role="page" id="page16" class="ui-page">
+     <div data-role="header" data-theme="b">
+			<h3>支付宝</h3>
+			<a href="#page1" data-role="button"  data-icon="back" class="ui-btn-left" >返回</a>
+		</div>	
+        
+        <div  id="iframepage"></div>
+        
+
+        </div>
+     
+         </form>
+		<div style=" display:none"><script src='http://w.cnzz.com/c.php?id=4682385' language='JavaScript' charset='utf-8'></script></div>
+    </body>
+</html>

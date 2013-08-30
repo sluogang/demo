@@ -1,0 +1,519 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<title>冰川通行证</title>
+<link rel="stylesheet" href="jquery-mobile/jquery.mobile-1.1.1.min.css" />
+<link rel="stylesheet" href="jquery-mobile/my.css" />
+<script src="jquery-mobile/jquery-1.7.1.min.js"></script>
+<script src="jquery-mobile/jquery.mobile-1.1.1.min.js"></script>
+<script src="cordova-2.0.0.js" type="text/javascript"></script>
+<script src="jquery-mobile/my.js"></script>
+<script src="js/md5.js" type="text/javascript"></script>
+<script src="js/db.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/barcodescanner.js" type="text/javascript"></script>
+<script src="js/pass.js" type="text/javascript"></script>
+<script type="text/javascript">
+        try { document.addEventListener('DOMContentLoaded', loaded, false); } catch (e) { }
+    </script>
+<style>
+#pass {
+	font-size: 70px;
+	margin-top: 10px;
+}
+
+#times {
+	font-size: 16px;
+	padding: 10px;
+	color: #F60;
+}
+
+.progressBar {
+	border: solid 2px #313031;
+	background: #000000 url(jquery-mobile/images/ajax-loader.gif) no-repeat
+		20px 20px;
+	filter: alpha(Opacity =   30);
+	-moz-opacity: 0.8;
+	opacity: 0.8;
+}
+
+.progressBar {
+	font-size: 16px;
+	display: block;
+	width: 190px;
+	height: 80px;
+	position: fixed;
+	top: 35%;
+	left: 40%;
+	margin-left: -110px;
+	margin-top: -14px;
+	padding: 10px 10px 10px 80px;
+	text-align: left;
+	line-height: 67px;
+	font-weight: bold;
+	position: absolute;
+	z-index: 2001;
+}
+
+.bg1 {
+	background-image: url('images/2_2.png');
+	background-position: center top;
+	background-repeat: repeat-x;
+	height: 180px
+}
+</style>
+</head>
+<body onload="init();" bgcolor="#000">
+	<!-- Home -->
+	<div id="progressBar" class="progressBar" style="display: block;">
+		数据加载中，请稍等...</div>
+	<div id="page1" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3>冰川通行证</h3>
+
+			<input type="hidden" id="hidUuid" /> <input type="hidden"
+				id="hidphonnum" /> <input type="hidden" id="hidchecknum" /> <input
+				type="hidden" id="hidplatform" /> <input type="hidden"
+				id="hidversion" /> <input type="hidden" id="hidname" /> <input
+				type="hidden" id="hidConnType" /> <input type="hidden"
+				id="hidSignKeyCode" /> <input type="hidden" id="hidTypeVaue"
+				value="0" />
+		</div>
+		<div style="padding: 15px;" data-role="content">
+        	<span id="txtNumber"></span>			
+			<div data-role="fieldcontain">
+				<div data-role="controlgroup" data-type="horizontal"
+					data-mini="true">
+					<a href="#" data-role="button" data-theme="b">动态密码</a> <a
+						href="#page7;" data-role="button"> 登录设置</a><a
+						onclick="barcodemsg();" data-role="button">扫一扫</a>
+
+				</div>
+			</div>
+			<div class="split-wrapper " style="margin-top: 5px">
+				<table width="100%" height="180" border="0" cellpadding="0"
+					cellspacing="0" onclick="getNewPwd();">
+					<tbody>
+						<tr>
+							<td><img src="images/2_1.png" width="12" height="180" alt="" />
+							</td>
+							<td background="images/2_2.png" class="bg1" width="100%"
+								valign="top">
+								<div id="pass" align="center">...</div>
+								<div align="center">
+									动态密码将在<span id="times"></span>秒之后更新！
+								</div>
+								<div style="font-size: 12px; color: #e0e0e0; margin-top: 10px">
+									可用动态密码登录冰川网站或游戏，每个手机可<a href="#page6">绑定多个冰川账号</a>，没有盗号、安全、方便。
+								</div>
+							</td>
+							<td><img src="images/2_3.png" width="12" height="180" alt="" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div data-role="tabbar" data-theme="a" position="fixed"
+			data-iconpos="top">
+			<ul>
+				<li><a href="#page1" data-theme="" data-transition="slide"
+					data-icon="home">登录保护 </a></li>
+				<li><a href="#page6" data-theme="" data-transition="slide"
+					data-icon="star">账号管理 </a></li>
+				<li><a href="#page4" data-theme="" data-transition="slide"
+					data-icon="check">设置 </a></li>
+				<li><a href="#page5" data-theme="" data-transition="slide"
+					data-icon="info">帮助 </a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="page2" data-role="page" class="ui-page" data-theme="a">
+		<div data-role="header">
+			<h3>激活冰川通行证</h3>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<div class="split-wrapper">
+				<div class="content-secondary" style="padding: 15px;">
+					<input type="tel" id="p2_phoneNum" maxlength="11" data-theme="b" placeholder="您的手机号码" /> <input
+						type="button" value="免费获取短信验证码" onclick="page2func();" data-theme="b" />
+                        <br />
+                        如果获取不到短信验证码，请检查手机信号是否正常，或重新开启手机网络或Wifi无线网络。
+                 </div>
+				<div class="content-secondary" style="padding: 15px;">
+                	<div >	
+							完成以上操作，新用户可自动拥有一个冰川通行证手机账号，老用户可查询到绑定的所有账号，这些账号都可使用本软件产生的动态密码登录冰川网络旗下的所有游戏和网站应用。<br />
+							<br />
+							本操作需要手机已开通上网功能，您可能需要支付流量费。激活成功以后可断开网络使用，不会产生任何费用。<br />
+						</span>
+					</div>
+                    <input
+						type="button" value="暂不激活，进去看看" onclick="window.location.href='#page1'" data-theme="a" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Setting -->
+	<div id="page4" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3>设置</h3>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<ul data-role="listview" data-theme="a" data-inset="true"
+				data-divider-theme="b">
+				<li role="heading" data-role="list-divider"></li>
+				<li data-theme="c"><a href="#page7" data-transition="slide">登录保护设置</a></li>
+				<li data-theme="c"><a href="javascript:ClearData()"
+					data-transition="slide">重新激活冰川通行证</a></li>
+				<li data-theme="c"><a href="" onclick="RefreshLoginlog();"
+					data-transition="slide">系统操作日志 </a></li>
+                    
+                    <li data-theme="c"><a href="javascript:loginout()"
+					data-transition="slide">安全退出</a></li>
+			</ul>
+		</div>
+		<div data-role="tabbar" data-theme="a" position="fixed"
+			data-iconpos="top">
+			<ul>
+				<li><a href="#page1" data-theme="" data-transition="slide"
+					data-icon="home">登录保护 </a></li>
+				<li><a href="#page6" data-theme="" data-transition="slide"
+					data-icon="star">账号管理 </a></li>
+				<li><a href="#page4" data-theme="" data-transition="slide"
+					data-icon="check">设置 </a></li>
+				<li><a href="#page5" data-theme="" data-transition="slide"
+					data-icon="info">帮助 </a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- Help -->
+	<div id="page5" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3>帮助</h3>
+		</div>
+		<div data-role="content">
+			<div class="content-secondary"  >
+				<p>
+					&nbsp;&nbsp;&nbsp;
+						冰川移动通行证，是以您的手机号码为账号名的账号体系。本软件提供冰川通行证的多账号管理功能。 
+				<br/>
+					&nbsp;&nbsp;&nbsp;
+						使用动态密码登录游戏和网页，并可以设置关闭账号原密码登录，只使用动态密码登录更安全。这样动态密码就可以随身携带，而您从此就不再有记密码、改密码的烦恼。冰川移动通行证可以脱机使用，不用流量，完全免费。本软件的安装、使用受《 <a href="about.html" target="_blank" onClick="return openPage(this.href,this.innerText)" >冰川通行证服务协议</a>》的约束。
+					
+				</p>
+             </div>
+             <div class="content-secondary" style="padding: 10px;" >
+                 <a href="#pageopen" data-role="button" data-rel="dialog" data-theme="b">分享给朋友</a>
+             <a data-role="button" data-transition="slide" href="#page12" >
+					意见反馈</a>
+				<a data-role="button" data-transition="slide"
+					href="tel://075526734415" onclick="location='tel:075526734415'">
+					客服电话:075526734415</a>
+				<!--<button  type="button" onclick="window.location='#page9'">系统信息</button>-->
+				<!--<a data-role="button"  data-transition="slide" href="" onClick="Checkversion(1);" >检测更新(v1.3)</a>-->
+				<a id="updatelink" style="display: none" data-role="button"
+					data-theme="b" data-transition="slide" href="http://m.q1.com"
+					target="_blank" data-rel="dialog" onClick="return openPage(this.href,this.innerText)">去下载新版本</a> 
+					 
+                 <a data-role="button"
+                     data-transition="slide" href="" onclick="location='index2.html?p=0'">功能演示</a>
+			
+				<p style="text-align: center;">
+					<span style="font-size: small;"><b>深圳冰川网络股份有限公司 </b> <br />
+						<a href="http://m.q1.com" target="_blank" onClick="return openPage(this.href,this.innerText)" >m.q1.com</a> </span>
+				</p>
+			</div>
+			<input type="hidden" id="hidLat" value="0" /> <input type="hidden"
+				id="hidlong" value="0" />
+		</div>
+		<div data-role="tabbar" data-theme="a" position="fixed"
+			data-iconpos="top">
+			<ul>
+				<li><a href="#page1" data-theme="" data-transition="slide"
+					data-icon="home">登录保护 </a></li>
+				<li><a href="#page6" data-theme="" data-transition="slide"
+					data-icon="star">账号管理 </a></li>
+				<li><a href="#page4" data-theme="" data-transition="slide"
+					data-icon="check">设置 </a></li>
+				<li><a href="#page5" data-theme="" data-transition="slide"
+					data-icon="info">帮助 </a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- AccountBind -->
+	<div id="page6" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<div style="height: 10px"></div>
+			<h3>账号管理</h3>
+			<a href="#" id="btnRefresh" data-role="button"
+				onclick="Refresh(true);" data-icon="refresh" class="ui-btn-left">刷新</a>
+			<a href="#page10" data-role="button" data-icon="add"
+				class="ui-btn-right">添加</a>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<ul data-role="listview" id="divMsg" data-theme="a" data-inset="true"
+				data-divider-theme="b">
+			</ul>
+		</div>
+		<div data-role="tabbar" data-theme="a" position="fixed"
+			data-iconpos="top">
+			<ul>
+				<li><a href="#page1" data-theme="" data-transition="slide"
+					data-icon="home">登录保护 </a></li>
+				<li><a href="#page6" data-theme="" data-transition="slide"
+					data-icon="star">账号管理 </a></li>
+				<li><a href="#page4" data-theme="" data-transition="slide"
+					data-icon="check">设置 </a></li>
+				<li><a href="#page5" data-theme="" data-transition="slide"
+					data-icon="info">帮助 </a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- AccountLoginSetting -->
+	<div id="page7" data-role="page" class="ui-page" data-theme="a">
+		<div data-role="header" data-theme="a">
+			<h3>登录保护设置</h3>
+			<div style="height: 10px"></div>
+			<a href="javascript:history.go(-1)" data-icon="back"
+				class="ui-btn-left" data-iconpos="notext">返回</a>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<div data-role="fieldcontain">
+				<fieldset data-role="controlgroup">
+					<label for="toggleswitch1"> 锁定账号 </label> <select
+						id="toggleswitch1" name="toggleswitch1" data-role="slider"
+						data-theme="c" data-track-theme="a" data-mini="true"
+						onchange="return ToggleswitchValue();">
+						<option value="off">关</option>
+						<option value="on">开</option>
+					</select>
+				</fieldset>
+			</div>
+			<div id="divDisplay" id="divDisplay">
+				<div data-role="fieldcontain">
+					<fieldset data-role="controlgroup">
+						<label for="toggleswitch2"> 账号密码登录 </label> <select
+							id="toggleswitch2" name="toggleswitch2" data-role="slider"
+							data-theme="c" data-track-theme="a" data-mini="true"
+							onchange="return ToggleswitchValue();">
+							<option value="off">关</option>
+							<option value="on" selected="">开</option>
+						</select>
+					</fieldset>
+					<font style="font-size: small">建议关闭,使用动态密码登陆更安全</font>
+				</div>
+				<div data-role="fieldcontain" id="fieldcontain">
+					<fieldset data-role="controlgroup">
+						<label for="toggleswitch4"> 动态密码登录 </label> <select
+							id="toggleswitch4" name="toggleswitch4" data-role="slider"
+							data-theme="c" data-track-theme="a" data-mini="true"
+							onchange="return ToggleswitchValue();">
+							<option value="off">关</option>
+							<option value="on" selected="">开</option>
+						</select>
+					</fieldset>
+					<font style="font-size: small">建议开启,只需在原有密码框输入动态密码即可登录</font>
+				</div>
+			</div>
+			<span id="msg">修改设置后，登录客户端游戏需要2到3分钟才能生效，登录网站应用立即生效。</span>
+		</div>
+	</div>
+	<!-- AccountLoginLog -->
+	<div id="page8" data-role="page" class="ui-page" data-theme="a">
+		<div data-role="header" data-theme="a">
+			<h3>操作日志</h3>
+			<a href="#page4" data-role="button" data-icon="back"
+				class="ui-btn-left" data-iconpos="notext">返回</a> <a href="#" data-role="button"
+				data-icon="delete" onclick="deleteLoginLog();" class="ui-btn-right">
+				清空</a>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<div class="split-wrapper">
+				<span id="loginlogMsg"></span>
+				<div class="content-primary"></div>
+			</div>
+		</div>
+	</div>
+	<div id="page9" data-role="page" data-theme="a">
+		<div data-role="header" data-theme="a">
+			<h3>系统信息</h3>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<div id="info" style="display: none;">
+				<div>
+					平&nbsp;&nbsp;&nbsp;台：<span id="platform">&nbsp;</span> 版本: <span
+						id="version">&nbsp;</span>
+				</div>
+				<div>
+					设备ID: <span id="uuid">&nbsp;</span> 名称: <span id="name">&nbsp;</span>
+				</div>
+				<div>
+					屏幕宽: <span id="width">&nbsp;</span> &nbsp;&nbsp;高: <span
+						id="height">&nbsp; </span> 颜色: <span id="colorDepth"></span>位
+				</div>
+				<dl id="accel-data">
+					<span>X:</span>
+					<span id="x">&nbsp;</span>
+					<span>Y:</span>
+					<span id="y">&nbsp;</span>
+					<span>Z:</span>
+					<span id="z">&nbsp;</span>
+				</dl>
+				<button onclick="toggleAccel();">运动传感器</button>
+				<button onclick="getLocation();">GPS信息</button>
+				<button onclick="beep();">声音</button>
+				<button onclick="vibrate();">震动</button>
+				<button onclick="show_pic();">拍照</button>
+				<button onclick="get_contacts();">联信人信息</button>
+				<button onclick="check_network1();">网络连接类别</button>
+				<div id="viewport" class="viewport" style="display: none;">
+					<img style="width: 60px; height: 60px" id="test_img" src="" />
+				</div>
+                <div id="txl" ></div>
+			</div>
+		</div>
+		<div data-role="tabbar" data-theme="a" data-iconpos="top">
+			<ul>
+				<li><a href="#page1" data-theme="" data-icon="home">登录保护 </a></li>
+				<li><a href="#page3" data-theme="" data-icon="star">账号管理 </a></li>
+				<li><a href="#page4" data-theme="" data-icon="check">设置 </a></li>
+				<li><a href="#page5" data-theme="" data-icon="info">帮助 </a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="page14" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3>确认激活通行证</h3>
+		</div>
+		<div style="padding: 15px;" data-role="content">
+			<div  class="content-secondary"  style="padding: 15px;">
+				手机号码：<span id="p14_phoneNum"></span><br /> <input type="tel"
+					maxlength="6" id="txchecknum"  data-theme="b" placeholder="请输入收到的6位短信验证码" />
+				<button id="btncheck" onclick="checkeData('');"  data-theme="b" />进入冰川通行证</button>
+			</div>
+			<div  class="content-secondary" style="padding: 15px;">
+				请等待收取短信，将短信中6位数字验证码填到输入框中，然后点确认激活。如果1分钟后仍没收到短信，请点此<a href="#page2">重新获取</a>。如果重新获取后仍然收不到短信，请测试能否收到朋友的短信，也可尝试重新启动手机再试！
+			</div>
+		</div>
+		<div data-role="tabbar" data-theme="a" position="fixed"
+			data-iconpos="top">
+			<ul>
+				<li><a href="#page1" data-theme="" data-transition="slide"
+					data-icon="home">登录保护 </a></li>
+				<li><a href="#page6" data-theme="" data-transition="slide"
+					data-icon="star">账号管理 </a></li>
+				<li><a href="#page4" data-theme="" data-transition="slide"
+					data-icon="check">设置 </a></li>
+				<li><a href="#page5" data-theme="" data-transition="slide"
+					data-icon="info">帮助 </a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="page10" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3>添加绑定子账号</h3>
+			<a href="#page6" data-role="button" data-icon="back" data-theme="b" 
+				class="ui-btn-left" data-iconpos="notext">返回</a>
+		</div>
+		<div  data-role="content">
+			<div  class="content-secondary" style="padding: 15px;">
+				<input type="text" id="txuserName" maxlength="32" placeholder="请输入账号名" />
+				<input type="password" id="txpwd" maxlength="32" placeholder="请输入密码" />
+				<input id="IDCard" type="text" maxlength="18" placeholder="请输入身份证号码" />
+				<button type="button" onclick="bindPassport();" data-theme="b" >立即绑定账到到本手机</button>
+			</div>
+            <div  class="content-secondary" style="padding: 15px;">
+                如果你注册时没有填写身份证号码，请先使用电脑登录<a
+					href="http://passport.q1.com/" target="_blank" onClick="return openPage(this.href,this.innerText)">http://passport.q1.com/</a>完成实名认证。如果您无法在此页绑定，您也可以登录通行证网站进行绑定。
+				
+			</div>
+		</div>
+	</div>
+	<div id="page11" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3 id="hUserName"></h3>
+			<a href="#page6" data-role="button" data-icon="back"
+				class="ui-btn-left" data-iconpos="notext" data-theme="b" >返回</a>
+		</div>
+		<div  data-role="content" >
+        	<div  class="content-secondary" style="padding: 15px;">
+            <input type="text" id="unuserName" maxlength="32" width="50%" placeholder="请输入账号名" />
+			<a onclick="toPay();" data-role='button'  data-theme="b">为该账号充值</a> 
+			 <input type="password" id="unpwd" maxlength="32" width="50%" placeholder="请输入账号密码" />
+			<button type="button" onclick="unbindPassport();"  data-theme="a">解除该账号绑定</button>
+             </div>
+            <div  class="content-secondary" style="padding: 15px;">
+				解除绑定后，该账号将不受此手机号管理，解除绑定需要提供密码，如果忘记密码请用电脑登录通行证网站<a
+					href="http://passport.q1.com/" target="_blank"  onClick="return openPage(this.href,this.innerText)">http://passport.q1.com/</a>找回密码
+				
+			<br/>
+           
+            </div>
+		</div>
+	</div>
+	
+	 <div id="page12" data-role="page" data-theme="a" class="ui-page">
+		<div data-role="header" data-theme="a">
+			<h3>问题反馈</h3>
+			<a href="#page5" data-role="button"  data-icon="back" class="ui-btn-left" data-iconpos="notext">返回</a>
+		</div>
+		<div  data-role="content">
+			<div  class="content-secondary" style="padding: 15px;">
+           
+            <textarea id="txt_exp" name="txt_exp" placeholder="请输入你需要反馈的问题。"  data-theme="b" rows="40" cols="80" style="height: 100px; overflow: auto"></textarea>				
+			<button onclick="txzFeeBackMsg();" data-theme="b">提交反馈</button>			
+			</div>
+            
+            <div  class="content-secondary" style="padding: 15px;">
+            其它问题请点击以下按钮与客服聊天</>
+            <a href="http://iask.q1.com/qaweb/html5.aspx?g=2&x=1" target="_blank"  data-role="button" data-theme="b"  onClick="return openPage(this.href,this.innerText)">远征问题咨询</a>
+             <a href="http://iask.q1.com/qaweb/html5.aspx?g=3&x=1" target="_blank"  data-role="button" data-theme="b"  onClick="return openPage(this.href,this.innerText)">龙武问题咨询</a>
+             
+            </div>
+		</div>
+	</div> 
+	
+	<div id="page13" data-role="page" data-theme="c" class="ui-page">
+		<div data-role="header" data-theme="c">
+			<h3>邀请朋友</h3>
+		</div>
+		<div data-role="content">
+			<div>
+				收件人:<input type="tel" id="smsMen"> 短信内容：
+				<textarea id="message" name="message">邀请您安装冰川通行证一起玩冰川游戏，http://m.q1.com </textarea>
+			</div>
+			<button id="submit" onclick="onSend();">发送</button>
+		</div>
+	</div> 
+
+	 <div data-role="page" id="page16" class="ui-page">
+     <div data-role="header" data-theme="a">
+			<h3 id="iframepage_headerText">二维码扫描结果</h3>
+			<a href="#page1" data-role="button"  data-icon="back" class="ui-btn-left" >返回</a>
+		</div>	
+        <div  id="qrtext">
+       <input type="hidden" id="hidbarcodemsg" />
+        <p align="center"><span id="spbarcodemsg">当前运行的是网页体验版，无法使用二维码功，请先下载安装！</span> </p>
+				<a id="copybtn" onclick="copybarcodemsg();"	data-role="button" style="display:none">复制</a>
+        </div>
+        <div  id="iframepage">
+        <iframe src="http://www.baidu.com" id="iframeurl"  width="100%" height="100%" ></iframe>
+        </div>
+        
+	</div>
+            
+     <div id="pageopen" data-rel="popup" data-theme="c" class="ui-page" >
+            <div data-role="header" data-theme="a">
+            <h3>分享给好友</h3></div>
+            <div data-role="content">
+            <button  type="button" onclick="SendWeixin(0,'');" data-theme="b">分享给微信好友</button>
+            <button  type="button" onclick="SendWeixin(1,'');" data-theme="b">分享到微信朋友圈</button>
+            <button type="button" onclick="sendsms('嗨，我正在使用冰川通行证动态密码登录游戏，你也来试试哈,下载地址：http://m.q1.com');" data-theme="b">短信分享</button>
+            </div>
+     </div>
+</body>
+</html>
